@@ -9,9 +9,9 @@
 %% Set up hardware parameters
 % First, you need to load MPR121_arduino.ino to arduino. 
 % set data saving path and recording length
-mouse = 'test';
-RecLength = 60; %seconds
-savpath = ['C:\Users\Yanjun Sun\Desktop\Bonsai_workflow\',mouse];
+mouse = 'test5';
+RecLength = 120; %seconds
+savpath = ['E:\behavior_workflow_test\',mouse];
 if ~exist(savpath,'dir')
     mkdir(savpath);
 end
@@ -92,7 +92,7 @@ while etime(clock, t0) < RecLength
     % channel5: 32, etc.
     touchStatus = read(mpr121,1,'uint8');
     touchRec = [touchRec;touchStatus];
-    touchTime = [touchTime;etime(clock, t0)]; % in seconds
+    touchTime = [touchTime;clock]; % in seconds
     % use touchStatus to trigger solenoid valve. 
     if touchStatus == 1
         writeDigitalPin(a,'D13',1);
@@ -117,9 +117,10 @@ end
 closepreview(vidObj);
 
 %% Post processing and data saving
-lickdata = [touchRec, touchTime];
+lick = touchRec;
+licktime = touchTime;
 videotime = vidObj.UserData;
-save([savpath,'\behavData.mat'],'lickdata','videotime');
+save([savpath,'\behavData.mat'],'lick','licktime','videotime');
 
 % Retrive the timestamp of recorded video
 % [~, time, metadata] = getdata(vidObj, vidObj.FramesAvailable);
